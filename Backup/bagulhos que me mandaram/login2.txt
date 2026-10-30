@@ -1,0 +1,116 @@
+<?php
+
+session_start();
+
+require_once("conexao.php");
+ 
+$erro = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    $senha = $_POST['senha'] ?? '';
+
+    if (!$email || empty($senha)) {
+        $erro = "Preencha email e senha corretamente.";
+    } else {
+
+        $stmt = mysqli_prepare($conn, "SELECT id, senha, nivel, email FROM cadastro WHERE email = ?");
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+         if (mysqli_num_rows($result) === 1) {
+            $usuario = mysqli_fetch_assoc($result);
+
+            if (password_verify($senha, $usuario['senha'])) {
+
+                // Login confirmado: cria a sessão
+                session_regenerate_id(true); // gera um novo ID de sessão ao logar, evita "session fixation"
+                $_SESSION['usuario_id'] = $usuario['id'];
+                $_SESSION['email']      = $usuario['email'];
+                $_SESSION['admin']      = ($usuario['nivel'] === 'admin');
+
+                if ($_SESSION['admin']) {
+                    header("Location: index.php"); // primeiro passa pela verificação do código por e-mail
+                } else {
+                    header("Location: area_cliente.php"); // ajuste para a página real do cliente
+                }
+                exit();
+
+            } else {
+                $erro = "Email ou senha incorretos.";
+            }
+        } else {
+            $erro = "Email ou senha incorretos.";
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MACRAME</title>
+      <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+ 
+<div class="login-container">
+ 
+    <div class="login-card">
+ 
+        <div class="login-header"> <br> <br> <br> <br> <br> <br>
+            <h1>Macrame</h1>
+            <p class="subtitle">Acesse sua conta</p>
+        </div>
+ 
+        <?php if ($erro): ?>
+            <div class="mensagem-erro">
+                <?= htmlspecialchars($erro) ?>
+            </div>
+        <?php endif; ?>
+ 
+        <form method="POST" class="login-form">
+ 
+            <div class="campo">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required autofocus>
+            </div>
+ 
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+            </div>
+ 
+            <button type="submit">Entrar</button>
+ 
+        </form>
+ 
+        <p class="login-footer">
+            Ainda não tem conta? <a href="cadastro.php">Cadastre-se aqui</a>
+        </p>
+ 
+    </div>
+ 
+</div>
+ <br> <br> <br> <br>
+</body>
+</html>
+<?php 
+
+
+// 1. LIGA O MOTOR: Carrega o banco de dados, o BASE_URL e o BASE_URL automáticos
+require_once __DIR__ . '/app/config/config.php';
+
+// 2. CARREGA O VISUAL: Usando o BASE_PATH para o PHP nunca se perder nas pastas
+
+require_once BASE_PATH . '/components/layout/head.php';
+
+require_once BASE_PATH . '/components/layout/navbar.php';
+
+
+require_once BASE_PATH . '/components/layout/footer.php';
+
+
+

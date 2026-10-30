@@ -1,0 +1,378 @@
+<?php
+session_start();
+
+require_once "conexao.php";
+require_once "app/config/config.php";
+
+$mensagem = '';
+$tipoMensagem = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Recebe os dados do formulário
+    $nome = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $senha = $_POST['password'] ?? '';
+    $telefone = trim($_POST['telefone'] ?? '');
+    $cpf = trim($_POST['cpf'] ?? '');
+    $endereco = trim($_POST['address'] ?? '');
+    $cep = trim($_POST['cep'] ?? '');
+    $numero = trim($_POST['address_number'] ?? '');
+    $complemento = trim($_POST['complement'] ?? '');
+
+    // ==========================
+    // VALIDAÇÕES
+    // ==========================
+
+    if (empty($nome) || empty($email) || empty($senha)) {
+
+        $mensagem = 'Preencha todos os campos obrigatórios.';
+        $tipoMensagem = 'danger';
+
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        $mensagem = 'Digite um endereço de e-mail válido.';
+        $tipoMensagem = 'danger';
+
+    } elseif (strlen($senha) < 8) {
+
+        $mensagem = 'A senha deve possuir pelo menos 8 caracteres.';
+        $tipoMensagem = 'danger';
+
+    } else {
+
+        // Protege a senha antes de armazená-la
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+        $dados = [
+            'name'           => $nome,
+            'email'          => $email,
+            'password'       => $senhaHash,
+            'telefone'       => $telefone,
+            'cpf'            => $cpf,
+            'address'        => $endereco,
+            'cep'            => $cep,
+            'address_number' => $numero,
+            'complement'     => $complemento,
+            'role'           => 'Cliente',
+            'status'         => 'Ativo'
+        ];
+
+        try {
+
+            $usuarioModel = new Usuario();
+
+            if ($usuarioModel->cadastrar($dados)) {
+
+                $mensagem = 'Registro efetuado com sucesso! 
+                             <a href="login.php" class="alert-link">
+                             Faça login aqui</a>.';
+
+                $tipoMensagem = 'success';
+
+                // Limpa os campos depois do cadastro
+                $_POST = [];
+
+            } else {
+
+                $mensagem = 'Não foi possível realizar o cadastro. 
+                             Verifique os dados e tente novamente.';
+
+                $tipoMensagem = 'danger';
+            }
+
+        } catch (Exception $e) {
+
+            $mensagem = 'Ocorreu um erro ao realizar o cadastro. 
+                         Tente novamente mais tarde.';
+
+            $tipoMensagem = 'danger';
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cadastro - MACRAME</title>
+
+<link rel="stylesheet"
+      href="src/bootstrap/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+      href="assets/css/index.css">
+```
+
+</head>
+
+<body class="bg-light">
+
+<div class="container my-5 pt-5 mb-5">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-md-8">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header text-white"
+                 style="background-color: #df7815;">
+
+                <h4 class="mb-0">Criar Conta</h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <?php if (!empty($mensagem)): ?>
+
+                    <div class="alert alert-<?= htmlspecialchars($tipoMensagem) ?>"
+                         role="alert">
+
+                        <?= $mensagem ?>
+
+                    </div>
+
+                <?php endif; ?>
+
+
+                <!--
+                    O formulário agora envia para o próprio arquivo.
+                    Isso permite que o código PHP acima processe o POST.
+                -->
+                <form method="POST" action="">
+
+                    <div class="row g-3">
+
+                        <!-- ==========================
+                             DADOS PESSOAIS
+                        =========================== -->
+
+                        <div class="col-md-6">
+
+                            <label for="name"
+                                   class="form-label">
+                                Nome
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="name"
+                                   name="name"
+                                   value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label for="email"
+                                   class="form-label">
+                                E-mail
+                            </label>
+
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   name="email"
+                                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label for="password"
+                                   class="form-label">
+                                Senha
+                            </label>
+
+                            <input type="password"
+                                   class="form-control"
+                                   id="password"
+                                   name="password"
+                                   minlength="8"
+                                   required>
+
+                            <div class="form-text">
+                                A senha deve possuir pelo menos 8 caracteres.
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label for="telefone"
+                                   class="form-label">
+                                Telefone
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="telefone"
+                                   name="telefone"
+                                   value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label for="cpf"
+                                   class="form-label">
+                                CPF
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="cpf"
+                                   name="cpf"
+                                   value="<?= htmlspecialchars($_POST['cpf'] ?? '') ?>">
+
+                        </div>
+
+
+                        <hr class="my-4">
+
+
+                        <!-- ==========================
+                             ENDEREÇO
+                        =========================== -->
+
+                        <div class="col-md-4">
+
+                            <label for="cep"
+                                   class="form-label">
+                                CEP
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="cep"
+                                   name="cep"
+                                   value="<?= htmlspecialchars($_POST['cep'] ?? '') ?>">
+
+                        </div>
+
+
+                        <div class="col-md-8">
+
+                            <label for="address"
+                                   class="form-label">
+                                Endereço
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="address"
+                                   name="address"
+                                   value="<?= htmlspecialchars($_POST['address'] ?? '') ?>">
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label for="address_number"
+                                   class="form-label">
+                                Número
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="address_number"
+                                   name="address_number"
+                                   value="<?= htmlspecialchars($_POST['address_number'] ?? '') ?>">
+
+                        </div>
+
+
+                        <div class="col-md-8">
+
+                            <label for="complement"
+                                   class="form-label">
+                                Complemento
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="complement"
+                                   name="complement"
+                                   value="<?= htmlspecialchars($_POST['complement'] ?? '') ?>">
+
+                        </div>
+
+
+                        <!-- ==========================
+                             BOTÃO
+                        =========================== -->
+
+                        <div class="col-12 mt-4">
+
+                            <button type="submit"
+                                    class="btn text-white w-100"
+                                    style="background-color: #df7815;
+                                           border-color: #df7815;">
+
+                                Registrar
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+
+                <div class="text-center mt-4">
+
+                    <p class="mb-0">
+                        Já possui uma conta?
+                        <a href="login.php">
+                            Faça login aqui
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+</body>
+
+</html>
+
+<?php
+// 1. LIGA O MOTOR: Carrega o banco de dados, o BASE_URL e o BASE_URL automáticos
+require_once __DIR__ . '/app/config/config.php';
+
+// 2. CARREGA O VISUAL: Usando o BASE_PATH para o PHP nunca se perder nas pastas
+
+require_once BASE_PATH . '/components/layout/head.php';
+
+require_once BASE_PATH . '/components/layout/navbar.php';
+
+
+require_once BASE_PATH . '/components/layout/footer.php';

@@ -21,7 +21,7 @@ $isAjax = strtolower(
 
 // Verifica autenticação
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id'])) {
 
     if ($isAjax) {
         header('Content-Type: application/json; charset=utf-8');

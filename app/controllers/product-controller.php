@@ -37,6 +37,7 @@ function handle_register($conn)
     $price = (float) ($_POST['price'] ?? 0);
     $description = trim($_POST['description'] ?? '');
     $category = trim($_POST['category'] ?? '');
+    $estado = 'ativo';
 
     if (
         $name === '' ||
@@ -65,19 +66,20 @@ function handle_register($conn)
     $stmt = mysqli_prepare(
         $conn,
         "INSERT INTO products
-        (name, quantity, price, description, image, category)
-        VALUES (?, ?, ?, ?, ?, ?)"
+        (name, quantity, price, description, image, category, estado)
+        VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sidsss",
+        "sidssss",
         $name,
         $quantity,
         $price,
         $description,
         $image,
-        $category
+        $category,
+        $estado
     );
 
 
@@ -268,6 +270,8 @@ function handle_edit($conn)
 
     $category = trim($_POST['category'] ?? '');
 
+    $estado = $_POST['estado'] ?? '';
+    
 
     /*
      * Validação
@@ -279,7 +283,8 @@ function handle_edit($conn)
         $description === '' ||
         $category === '' ||
         $quantity < 0 ||
-        $price < 0
+        $price < 0 ||
+        !in_array($estado, ['ativo', 'desativado'], true)
     ) {
 
         header(
@@ -450,20 +455,22 @@ function handle_edit($conn)
              price = ?,
              description = ?,
              image = ?,
-             category = ?
+             category = ?,
+             estado = ?
          WHERE id = ?"
     );
 
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sidsssi",
+        "sidssssi",
         $name,
         $quantity,
         $price,
         $description,
         $image,
         $category,
+        $estado,
         $id
     );
 

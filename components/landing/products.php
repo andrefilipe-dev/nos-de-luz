@@ -11,6 +11,7 @@ $sql = "
         FROM orders_items
         GROUP BY product_id
     ) v ON v.product_id = p.id
+    WHERE p.estado = 'ativo'
     ORDER BY total_compras DESC, p.name ASC
     LIMIT 4
 ";
@@ -148,6 +149,15 @@ if (!$result) {
 </section>
 
 <script>
+    function updateCartBadge(quantity) {
+        const count = Number(quantity ?? 0);
+
+        document.querySelectorAll('.cart-badge').forEach(badge => {
+            badge.textContent = count;
+            badge.classList.toggle('d-none', count <= 0);
+        });
+    }
+
     document.querySelectorAll('.btn-add-cart').forEach(button => {
         button.addEventListener('click', async () => {
             if (button.disabled) return;
@@ -169,11 +179,18 @@ if (!$result) {
 
                 const data = await response.json();
 
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
                 if (!response.ok || !data.success) {
                     throw new Error(
                         data.message || 'Não foi possível adicionar o produto.'
                     );
                 }
+
+                updateCartBadge(data.cartCount);
 
                 button.textContent = 'Adicionado ao carrinho';
                 button.classList.remove('primary', 'secondary');

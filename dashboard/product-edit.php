@@ -13,7 +13,7 @@ if ($id <= 0) {
 
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT id, name, quantity, price, description, image, category
+    "SELECT id, name, quantity, price, description, image, category, estado
      FROM products
      WHERE id = ?"
 );
@@ -129,11 +129,9 @@ require_once BASE_PATH . '/components/layout/header.php';
                                     <!-- PREÇO -->
 
                                     <div class="form-field col-6">
-
                                         <label for="price">
                                             Preço
                                         </label>
-
                                         <input
                                             class="form-control"
                                             name="price"
@@ -144,18 +142,14 @@ require_once BASE_PATH . '/components/layout/header.php';
                                             value="<?= e($product['price']) ?>"
                                             required
                                         >
-
                                     </div>
-
 
                                     <!-- QUANTIDADE -->
 
                                     <div class="form-field col-6">
-
                                         <label for="quantity">
                                             Quantidade
                                         </label>
-
                                         <input
                                             class="form-control"
                                             name="quantity"
@@ -166,18 +160,14 @@ require_once BASE_PATH . '/components/layout/header.php';
                                             value="<?= e($product['quantity']) ?>"
                                             required
                                         >
-
                                     </div>
-
 
                                     <!-- CATEGORIA -->
 
                                     <div class="form-field col-12">
-
                                         <label for="category">
                                             Categoria
                                         </label>
-
                                         <input
                                             class="form-control"
                                             name="category"
@@ -187,49 +177,31 @@ require_once BASE_PATH . '/components/layout/header.php';
                                             value="<?= e($product['category']) ?>"
                                             required
                                         >
-
                                     </div>
-
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
 
 
                     <!-- DESCRIÇÃO -->
 
                     <div class="card no-hover">
-
                         <div class="card-body">
-
                             <div class="form-content">
-
                                 <div class="form-header">
-
                                     <div class="icon-box">
                                         <i class="ri-file-text-line"></i>
                                     </div>
-
                                     <h3 class="form-title">
                                         Descrição
                                     </h3>
-
                                 </div>
-
-
                                 <div class="form-body row g-3">
-
                                     <div class="form-field col-12">
-
                                         <label for="description">
                                             Descrição do produto
                                         </label>
-
                                         <textarea
                                             class="form-control"
                                             name="description"
@@ -238,51 +210,35 @@ require_once BASE_PATH . '/components/layout/header.php';
                                             maxlength="5000"
                                             required
                                         ><?= e($product['description']) ?></textarea>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
 
 
                     <!-- IMAGEM -->
 
                     <div class="card no-hover">
-
                         <div class="card-body">
-
                             <div class="form-content">
-
                                 <div class="form-header">
-
                                     <div class="icon-box">
                                         <i class="ri-image-line"></i>
                                     </div>
-
                                     <h3 class="form-title">
                                         Imagem do Produto
                                     </h3>
-
                                 </div>
 
-
                                 <div class="form-body row g-3">
-
 
                                     <!-- IMAGEM ATUAL -->
 
                                     <div class="form-field col-12">
-
                                         <label>
                                             Imagem atual
                                         </label>
-
                                         <div>
                                             <img
                                                 src="<?= BASE_URL . e($product['image']) ?>"
@@ -290,18 +246,14 @@ require_once BASE_PATH . '/components/layout/header.php';
                                                 style="width: 150px; height: 150px; object-fit: cover;"
                                             >
                                         </div>
-
                                     </div>
-
 
                                     <!-- NOVA IMAGEM -->
 
                                     <div class="form-field col-12">
-
                                         <label for="image">
                                             Alterar imagem
                                         </label>
-
                                         <input
                                             class="form-control"
                                             name="image"
@@ -309,46 +261,61 @@ require_once BASE_PATH . '/components/layout/header.php';
                                             type="file"
                                             accept="image/jpeg,image/png,image/webp"
                                         >
-
                                         <small class="text-muted">
                                             Deixe vazio para manter a imagem atual.
                                         </small>
-
                                     </div>
-
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
+                    <!-- ESTADO -->
 
+                    <div class="form-field col-12">
+
+                        <label for="estado">
+                            Estado do produto
+                        </label>
+
+                        <select
+                            class="form-control"
+                            name="estado"
+                            id="estado"
+                            required
+                        >
+                            <option
+                                value="ativo"
+                                <?= $product['estado'] === 'ativo' ? 'selected' : '' ?>
+                            >
+                                Ativo
+                            </option>
+
+                            <option
+                                value="desativado"
+                                <?= $product['estado'] === 'desativado' ? 'selected' : '' ?>
+                            >
+                                Desativado
+                            </option>
+
+                        </select>
+
+                    </div>
+                    
                     <!-- BOTÃO -->
 
                     <div class="d-flex w-100 justify-content-end p-0">
-
                         <button
                             type="submit"
                             class="btn secondary"
                         >
                             Salvar Alterações
                         </button>
-
                     </div>
-
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
-
 <?php require_once BASE_PATH . '/components/layout/scripts.php'; ?>

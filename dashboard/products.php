@@ -9,7 +9,7 @@ if ($filter === '') {
     
     $stmt = mysqli_prepare(
         $conn,
-        "SELECT id, name, quantity, price, category, image
+        "SELECT id, name, quantity, price, category, image, estado
         FROM products
         ORDER BY id DESC"
     );
@@ -22,19 +22,21 @@ if ($filter === '') {
 
     $stmt = mysqli_prepare(
         $conn,
-        "SELECT id, name, quantity, price, category, image
+        "SELECT id, name, quantity, price, category, image, estado
          FROM products
          WHERE id LIKE ?
             OR name LIKE ?
             OR quantity LIKE ?
             OR price LIKE ?
             OR category LIKE ?
+            OR estado LIKE ?
          ORDER BY id DESC"
     );
 
     mysqli_stmt_bind_param(
         $stmt,
-        "sssss",
+        "ssssss",
+        $param,
         $param,
         $param,
         $param,
@@ -91,7 +93,7 @@ require_once BASE_PATH . '/components/layout/header.php';
                         <div class="icon-box"><i class="ri-apps-line"></i></div>
                         <a href="<?= BASE_URL ?>dashboard/product-create.php" class="btn secondary">Adicionar</a>
                     </div>
-                    <h3 class="card-title">Projetos</h3>
+                    <h3 class="card-title">Produtos</h3>
                     <p>Todos os produtos cadastrados.</p>
                     <hr>
                     <div>

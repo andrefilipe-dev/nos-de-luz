@@ -675,6 +675,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Falha ao salvar a quantidade.');
             }
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error('Não foi possível atualizar o carrinho.');
+            }
+
+            // Atualiza o ícone do carrinho
+            updateCartBadge(data.cartCount);
+
         } catch (error) {
             console.error('Erro ao atualizar o carrinho:', error);
         }

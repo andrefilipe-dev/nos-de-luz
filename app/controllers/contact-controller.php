@@ -15,7 +15,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
 
     require_once __DIR__ . "/../mail/mailer.php";
 
-    if (send_email("alldyneltd@gmail.com", "Nova Solicitação", $body, $email)) {
+    if (send_email("helenaandre2008@gmail.com", $subject, $body, $email)) {
         header("Location: " . BASE_URL . "index.php?alert=email_sent#contact");
 
         exit;

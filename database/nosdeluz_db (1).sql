@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 29/10/2026 às 23:30
+-- Tempo de geração: 02/11/2026 às 22:38
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -43,7 +43,8 @@ CREATE TABLE `orders` (
 INSERT INTO `orders` (`id`, `user_id`, `total`, `payment_status`, `order_status`, `date_register`) VALUES
 (5, 4, 539.91, 'Pendente', 'Pendente', '2026-10-12 17:27:23'),
 (6, 4, 502.96, 'Aprovado', 'Entregue', '2026-10-12 17:33:20'),
-(7, 1, 46.46, 'Aprovado', 'Preparando', '2026-10-22 18:23:57');
+(7, 1, 46.46, 'Aprovado', 'Preparando', '2026-10-22 18:23:57'),
+(8, 1, 124.50, 'Pendente', 'Pendente', '2026-11-01 22:19:56');
 
 -- --------------------------------------------------------
 
@@ -67,7 +68,8 @@ INSERT INTO `orders_items` (`id`, `order_id`, `product_id`, `quantity`, `price`)
 (7, 5, 1, 9, 59.99),
 (8, 6, 1, 5, 59.99),
 (9, 6, 3, 3, 67.67),
-(10, 7, 4, 2, 23.23);
+(10, 7, 4, 2, 23.23),
+(11, 8, 4, 5, 24.90);
 
 -- --------------------------------------------------------
 
@@ -82,18 +84,20 @@ CREATE TABLE `products` (
   `price` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(256) NOT NULL,
-  `category` varchar(50) NOT NULL
+  `category` varchar(50) NOT NULL,
+  `estado` enum('ativo','desativado') NOT NULL DEFAULT 'ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `quantity`, `price`, `description`, `image`, `category`) VALUES
-(1, 'Bolsa de Crochê Artesanal', 48, 59.99, 'Bolsa de crochê branca, artesanal e delicada, perfeita para o dia a dia.', 'assets/images/products/product_1.jpeg', 'Bolsa'),
-(3, 'Conjunto Pulseira + Brinco', 60, 39.90, 'Brinco e pulseira artesanais com pérolas, elegantes e delicados', 'assets/images/products/product_3.jpeg', 'Conjunto'),
-(4, 'Brinco', 19, 24.90, 'Brinco artesanal dourado com detalhes em pérolas, delicado e elegante.', 'assets/images/products/product_4.jpeg', 'Brincos'),
-(6, 'Pulseira', 80, 34.90, 'Pulseira artesanal com miçangas e pedras coloridas, cheia de estilo e charme.', 'assets/images/products/product_6.jpeg', 'Pulseiras');
+INSERT INTO `products` (`id`, `name`, `quantity`, `price`, `description`, `image`, `category`, `estado`) VALUES
+(1, 'Bolsa de Macramê Artesanal', 48, 59.99, 'Bolsa de crochê branca, artesanal e delicada, perfeita para o dia a dia.', 'assets/images/products/product_1.jpeg', 'Bolsa', 'ativo'),
+(3, 'Conjunto Pulseira + Brinco', 60, 39.90, 'Brinco e pulseira artesanais com pérolas, elegantes e delicados', 'assets/images/products/product_3.jpeg', 'Conjunto', 'ativo'),
+(4, 'Brinco', 14, 24.90, 'Brinco artesanal dourado com detalhes em pérolas, delicado e elegante.', 'assets/images/products/product_4.jpeg', 'Brincos', 'ativo'),
+(6, 'Pulseira', 80, 34.90, 'Pulseira artesanal com miçangas e pedras coloridas, cheia de estilo e charme.', 'assets/images/products/product_6.jpeg', 'Pulseiras', 'ativo'),
+(7, 'produto desativado', 12, 20.10, 'exemplo', 'assets/images/products/product_7.png', 'exemplo', 'desativado');
 
 -- --------------------------------------------------------
 
@@ -128,7 +132,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `cpf`, `address
 (1, 'rogério', 'rogerio@gmail.com', '$2y$10$zPlCl6hA5OEF5oeDAAeDVejyUMSHcb9rX9sqVXhSgDVsGFt/2FvLK', '12345678912', '21989898982', 'uma rua aí', '21321321', '123', 'apartamento 67', 'Cliente', 'Ativo', 'sim', NULL, NULL, '2026-09-29 19:04:25'),
 (2, 'vadimilson', 'vadimilson@gmail.com', '$2y$10$zPlCl6hA5OEF5oeDAAeDVejyUMSHcb9rX9sqVXhSgDVsGFt/2FvLK', '21989898983', '12345678914', 'uma rua aí', '21321322', '123', 'apartamento 67', 'Admin', 'Ativo', 'nao', '55658d077f7cf8700b556182b36991da08e2f3af844b4cc0786eacade09d574d', '2026-10-04 00:07:06', '2026-09-29 19:04:25'),
 (4, 'jurema', 'jurema@gmail.com', '$2y$10$qYynDt05FuZdRXz6h7aWue4k3YCpeuwHvsADGw6lMTKC8mETg/u4O', '21112121122', '12123123214', '123213123', '12321312', '123123123', '213123', 'Cliente', 'Ativo', 'nao', NULL, NULL, '2026-10-12 16:27:19'),
-(5, 'adm', 'adm@gmail.com', '$2y$10$NQWLbaDdiPLIhNooze6p3.xWD8DmWdTbaMmQrLWWN6yRSijeAL/Ga', '67856785678', '56787685785', 'rua vinte', '24545342', '2342', 'bloco dois', 'Cliente', 'Ativo', 'nao', NULL, NULL, '2026-10-27 01:54:57');
+(5, 'adm', 'adm@gmail.com', '$2y$10$NQWLbaDdiPLIhNooze6p3.xWD8DmWdTbaMmQrLWWN6yRSijeAL/Ga', '56787685785', '67856785678', 'rua vinte', '24545342', '2342', 'bloco dois', 'Admin', 'Ativo', 'nao', NULL, NULL, '2026-10-27 01:54:57');
 
 --
 -- Índices para tabelas despejadas
@@ -170,19 +174,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de tabela `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `orders_items`
 --
 ALTER TABLE `orders_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `users`

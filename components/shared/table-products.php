@@ -10,6 +10,7 @@
                 <th>Preço</th>
                 <th>Quantidade</th>
                 <th>Categoria</th>
+                <th>Estado</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -21,12 +22,19 @@
                         <td>
                             <?= e($product['id']) ?>
                         </td>
+
                         <td>
-                            <img src="<?= BASE_URL . e($product['image']) ?>" alt="<?= e($product['name']) ?>" style="width: 60px; height: 60px; object-fit: cover;">
+                            <img
+                                src="<?= BASE_URL . e($product['image']) ?>"
+                                alt="<?= e($product['name']) ?>"
+                                style="width: 60px; height: 60px; object-fit: cover;"
+                            >
                         </td>
+
                         <td>
                             <?= e($product['name']) ?>
                         </td>
+
                         <td>
                             R$ <?= number_format($product['price'], 2, ',', '.') ?>
                         </td>
@@ -34,9 +42,23 @@
                         <td>
                             <?= e($product['quantity']) ?>
                         </td>
+
                         <td>
                             <?= e($product['category']) ?>
                         </td>
+
+                        <td>
+                            <?php if ($product['estado'] === 'ativo'): ?>
+                                <span class="badge secondary green">
+                                    Ativo
+                                </span>
+                            <?php else: ?>
+                                <span class="badge secondary red">
+                                    Desativado
+                                </span>
+                            <?php endif; ?>
+                        </td>
+
                         <td>
                             <a
                                 class="btn secondary"
@@ -47,16 +69,17 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
+
             <?php else: ?>
+
                 <tr>
-                    <td
-                        colspan="7"
-                        class="text-center text-muted"
-                    >
+                    <td colspan="8" class="text-center text-muted">
                         Nenhum produto encontrado.
                     </td>
                 </tr>
+
             <?php endif; ?>
         </tbody>
+
     </table>
 </div>

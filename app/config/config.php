@@ -28,11 +28,11 @@ if ($domain == 'localhost' || str_contains($domain, '192.168.') || $domain == '1
 
 define('BASE_URL', $protocol . $domain . '/' . $projectFolder);
 
-$host = getenv('DB_HOST') ?: 'mysql-nosdeluz.alwaysdata.net';
+$host = getenv('DB_HOST') ?: 'localhost';
 
-$username = getenv('DB_USER') ?: 'nosdeluz';
+$username = getenv('DB_USER') ?: 'root';
 
-$password = getenv('DB_PASSWORD') ?: 'AshuShua9';
+$password = getenv('DB_PASSWORD') ?: '';
 
 $database = getenv('DB_NAME') ?: 'nosdeluz_db';
 

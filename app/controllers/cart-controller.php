@@ -240,7 +240,8 @@ function handle_update()
         echo json_encode([
             'success' => true,
             'id' => $id,
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'cartCount' => array_sum($_SESSION['cart'] ?? [])
         ]);
 
         exit;

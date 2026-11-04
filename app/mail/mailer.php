@@ -2,7 +2,7 @@
 
 function send_email($to, $subject, $body, $reply_to = null)
 {
-    $api_key = "re_TLteUnaW_LUdQCdFF5W2KfZG1KgiCQhj3";
+    $api_key = "re_bsVGGj5b_APmKoiCrWG4X54awWnZxWSUM";
 
     $data = [
         'from' => 'onboarding@resend.dev',
